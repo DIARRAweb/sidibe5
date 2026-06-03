@@ -10114,6 +10114,8 @@ window.closeReceipt = function(){
 };
 
 let pendingTransfer = null;
+let transferConfirmRunning = false;
+let scheduledConfirmRunning = false;
 
 function showTransferReceipt(data, mode="success"){
 
@@ -10446,136 +10448,146 @@ resetButton();
 };
 
 window.confirmPendingTransfer = async function(){
-  if(!pendingTransfer) return;
+  if(!pendingTransfer || transferConfirmRunning) return;
+
+  transferConfirmRunning = true;
+
+  const confirmBtn = document.querySelector("#receiptContent .receipt-actions button");
+  if(confirmBtn){
+    confirmBtn.disabled = true;
+    confirmBtn.innerText = "⏳ Confirmation...";
+  }
 
   const p = pendingTransfer;
-
-  const senderSnap = await get(ref(db, "users/" + p.sender.phone));
-  const receiverSnap = await get(ref(db, "users/" + p.receiverPhone));
-
-  if(!senderSnap.exists() || !receiverSnap.exists()){
-    alert("❌ Compte introuvable");
-    pendingTransfer = null;
-    return;
-  }
-
-  const freshSender = senderSnap.val();
-  const freshReceiver = receiverSnap.val();
-
-  const disponible =
-    Number(freshSender.solde || 0) -
-    Number(freshSender.frozenBalance || 0);
-
-  if(disponible < Number(p.totalDebit || 0)){
-    alert("❌ Solde insuffisant. Le transfert est annulé.");
-    pendingTransfer = null;
-    closeReceipt();
-    return;
-  }
-
-  const newSenderSolde =
-    Number(freshSender.solde || 0) - Number(p.totalDebit || 0);
-
-  const newReceiverSolde =
-    Number(freshReceiver.solde || 0) + Number(p.convertedAmount || 0);
-
-  if(newSenderSolde < 0){
-    alert("❌ Opération refusée : solde négatif impossible.");
-    pendingTransfer = null;
-    closeReceipt();
-    return;
-  }
-
-  await update(ref(db,"users/"+p.sender.phone), {
-    solde: newSenderSolde
-  });
-
-  await update(ref(db,"users/"+p.receiverPhone), {
-    solde: newReceiverSolde
-  });
-  const treasurySnap = await get(ref(db,"treasury"));
-let freshTreasury = treasurySnap.exists() ? treasurySnap.val() : p.treasury;
-
-freshTreasury = addFeesToTreasury(
-  freshTreasury,
-  p.feeType,
-  p.serviceFee,
-  p.startupFee
-);
-
-await update(ref(db,"treasury"), freshTreasury);
-
-  const tx = await push(ref(db,"history/"+currentUser.phone),{
-    customID:p.customID,
-    from:p.sender.phone,
-    to:p.receiverPhone,
-    amountOriginal:p.amount,
-    amountConverted:p.convertedAmount,
-    serviceFee:p.serviceFee,
-    startupFee:p.startupFee,
-    totalFees:p.totalFees,
-    rateUsed:p.rate,
-    reason:p.reason,
-    date:new Date().toLocaleString(),
-    createdAt:Date.now()
-  });
-
-  await push(ref(db,"history/"+p.receiverPhone),{
-    customID:p.customID,
-    from:p.sender.phone,
-    to:p.receiverPhone,
-    amountOriginal:p.convertedAmount,
-    date:new Date().toLocaleString(),
-    createdAt:Date.now(),
-    type:"received"
-  });
-
-  await push(ref(db,"notifications/"+p.receiverPhone),{
-    title:"💰Argent reçu",
-    phone:p.sender.phone,
-    amount:p.convertedAmount,
-    currency:p.receiverCur.code,
-    symbol:p.receiverCur.symbol,
-    reason:p.reason,
-    date:new Date().toLocaleString(),
-    claimable:false,
-    seen:false
-  });
-
-  await push(ref(db,"notifications/"+p.sender.phone),{
-    title:"📤Argent envoyé",
-    phone:p.receiverPhone,
-    amount:p.amount,
-    currency:p.senderCur.code,
-    symbol:p.senderCur.symbol,
-    reason:p.reason,
-    date:new Date().toLocaleString(),
-    claimable:true,
-    seen:false,
-    txId:tx.key
-  });
-
-  showTransferReceipt({
-    receiverName:p.receiverData.name || "Destinataire",
-    receiverPhoto:p.receiverData.photo || "",
-    receiverPhone:p.receiverPhone,
-    amountOriginal:formatMoney(p.amount,p.senderCur),
-    amountConverted:formatMoney(p.convertedAmount,p.receiverCur),
-    serviceFee:formatMoney(p.serviceFee,p.senderCur),
-    startupFee:formatMoney(p.startupFee,p.senderCur),
-    totalFees:formatMoney(p.totalFees,p.senderCur),
-    rateUsed:p.rate,
-    newBalance:formatMoney(p.sender.solde,p.senderCur),
-    customID:p.customID
-  }, "success");
-
   pendingTransfer = null;
 
-  messageBox.innerText=(translations[getUserLang()] || translations.fr).transferSuccess;
+  try{
+    const senderSnap = await get(ref(db, "users/" + p.sender.phone));
+    const receiverSnap = await get(ref(db, "users/" + p.receiverPhone));
 
-  resetForm();
-  loadNotifications();
-  resetButton();
+    if(!senderSnap.exists() || !receiverSnap.exists()){
+      alert("❌ Compte introuvable");
+      closeReceipt();
+      return;
+    }
+
+    const freshSender = senderSnap.val();
+    const freshReceiver = receiverSnap.val();
+
+    const disponible =
+      Number(freshSender.solde || 0) -
+      Number(freshSender.frozenBalance || 0);
+
+    if(disponible < Number(p.totalDebit || 0)){
+      alert("❌ Solde insuffisant. Le transfert est annulé.");
+      closeReceipt();
+      return;
+    }
+
+    const newSenderSolde = Number(freshSender.solde || 0) - Number(p.totalDebit || 0);
+    const newReceiverSolde = Number(freshReceiver.solde || 0) + Number(p.convertedAmount || 0);
+
+    if(newSenderSolde < 0){
+      alert("❌ Opération refusée : solde négatif impossible.");
+      closeReceipt();
+      return;
+    }
+
+    await update(ref(db,"users/"+p.sender.phone), {
+      solde: newSenderSolde
+    });
+
+    await update(ref(db,"users/"+p.receiverPhone), {
+      solde: newReceiverSolde
+    });
+
+    const treasurySnap = await get(ref(db,"treasury"));
+    let freshTreasury = treasurySnap.exists() ? treasurySnap.val() : p.treasury;
+
+    freshTreasury = addFeesToTreasury(
+      freshTreasury,
+      p.feeType,
+      p.serviceFee,
+      p.startupFee
+    );
+
+    await update(ref(db,"treasury"), freshTreasury);
+
+    const tx = await push(ref(db,"history/"+currentUser.phone),{
+      customID:p.customID,
+      from:p.sender.phone,
+      to:p.receiverPhone,
+      amountOriginal:p.amount,
+      amountConverted:p.convertedAmount,
+      serviceFee:p.serviceFee,
+      startupFee:p.startupFee,
+      totalFees:p.totalFees,
+      rateUsed:p.rate,
+      reason:p.reason,
+      date:new Date().toLocaleString(),
+      createdAt:Date.now()
+    });
+
+    await push(ref(db,"history/"+p.receiverPhone),{
+      customID:p.customID,
+      from:p.sender.phone,
+      to:p.receiverPhone,
+      amountOriginal:p.convertedAmount,
+      date:new Date().toLocaleString(),
+      createdAt:Date.now(),
+      type:"received"
+    });
+
+    await push(ref(db,"notifications/"+p.receiverPhone),{
+      title:"💰Argent reçu",
+      phone:p.sender.phone,
+      amount:p.convertedAmount,
+      currency:p.receiverCur.code,
+      symbol:p.receiverCur.symbol,
+      reason:p.reason,
+      date:new Date().toLocaleString(),
+      claimable:false,
+      seen:false
+    });
+
+    await push(ref(db,"notifications/"+p.sender.phone),{
+      title:"📤Argent envoyé",
+      phone:p.receiverPhone,
+      amount:p.amount,
+      currency:p.senderCur.code,
+      symbol:p.senderCur.symbol,
+      reason:p.reason,
+      date:new Date().toLocaleString(),
+      claimable:true,
+      seen:false,
+      txId:tx.key
+    });
+
+    showTransferReceipt({
+      receiverName:p.receiverData.name || "Destinataire",
+      receiverPhoto:p.receiverData.photo || "",
+      receiverPhone:p.receiverPhone,
+      amountOriginal:formatMoney(p.amount,p.senderCur),
+      amountConverted:formatMoney(p.convertedAmount,p.receiverCur),
+      serviceFee:formatMoney(p.serviceFee,p.senderCur),
+      startupFee:formatMoney(p.startupFee,p.senderCur),
+      totalFees:formatMoney(p.totalFees,p.senderCur),
+      rateUsed:p.rate,
+      newBalance:formatMoney(newSenderSolde,p.senderCur),
+      customID:p.customID
+    }, "success");
+
+    messageBox.innerText = (translations[getUserLang()] || translations.fr).transferSuccess;
+
+    resetForm();
+    loadNotifications();
+    resetButton();
+
+  }catch(e){
+    alert("❌ Erreur : " + e.message);
+  }finally{
+    transferConfirmRunning = false;
+  }
 };
 
 window.pendingScheduledTransfer = null;
@@ -10755,74 +10767,90 @@ window.sendScheduledMoney = async function(){
    ✅ CONFIRMER PROGRAMMATION
 ================================ */
 window.confirmPendingScheduledTransfer = async function(){
-  if(!window.pendingScheduledTransfer) return;
+  if(!window.pendingScheduledTransfer || scheduledConfirmRunning) return;
 
-  const p = window.pendingScheduledTransfer;
+  scheduledConfirmRunning = true;
 
-  const data = {
-    customID:p.customID,
-    from:p.sender.phone,
-    to:p.receiverPhone,
-
-    receiverName:p.receiverData.name || "",
-    receiverPhoto:p.receiverData.photo || "",
-
-    amountOriginal:p.amount,
-    amountConverted:p.convertedAmount,
-    serviceFee:p.serviceFee,
-    startupFee:p.startupFee,
-    totalFees:p.totalFees,
-    totalDebit:p.totalDebit,
-    feeType:p.feeType,
-
-    rateUsed:p.rate,
-    senderCurrency:p.senderCur.code,
-    receiverCurrency:p.receiverCur.code,
-    senderSymbol:p.senderCur.symbol,
-    receiverSymbol:p.receiverCur.symbol,
-
-    reason:p.reason,
-    scheduledFor:p.scheduleDate,
-    nextRunAt:new Date(p.scheduleDate).getTime(),
-
-    repeatType:p.repeatType || "once",
-
-    active:true,
-    executed:false,
-    createdAt:Date.now(),
-    updatedAt:Date.now()
-  };
-
-  if(editingScheduledTransferId){
-    await update(ref(db,"scheduledTransfers/" + editingScheduledTransferId), data);
-    editingScheduledTransferId = null;
-  }else{
-    await push(ref(db,"scheduledTransfers"), data);
+  const confirmBtn = document.querySelector("#receiptContent .receipt-actions button");
+  if(confirmBtn){
+    confirmBtn.disabled = true;
+    confirmBtn.innerText = "⏳ Confirmation...";
   }
 
-  showTransferReceipt({
-    receiverName:p.receiverData.name || "Destinataire",
-    receiverPhoto:p.receiverData.photo || "",
-    receiverPhone:p.receiverPhone,
-    amountOriginal:formatMoney(p.amount,p.senderCur),
-    amountConverted:formatMoney(p.convertedAmount,p.receiverCur),
-    serviceFee:formatMoney(p.serviceFee,p.senderCur),
-    startupFee:formatMoney(p.startupFee,p.senderCur),
-    totalFees:formatMoney(p.totalFees,p.senderCur),
-    rateUsed:p.rate,
-    newBalance:"Sera débité à la date programmée",
-    customID:p.customID
-  }, "success");
-
-  document.getElementById("scheduledMessage").innerText =
-    editingScheduledTransferId
-      ? "✅ Transfert programmé modifié"
-      : "✅ Transfert programmé avec succès";
-
-  resetScheduledForm();
-  loadScheduledTransfersList();
-
+  const p = window.pendingScheduledTransfer;
   window.pendingScheduledTransfer = null;
+
+  const wasEditing = !!editingScheduledTransferId;
+
+  try{
+    const data = {
+      customID:p.customID,
+      from:p.sender.phone,
+      to:p.receiverPhone,
+
+      receiverName:p.receiverData.name || "",
+      receiverPhoto:p.receiverData.photo || "",
+
+      amountOriginal:p.amount,
+      amountConverted:p.convertedAmount,
+      serviceFee:p.serviceFee,
+      startupFee:p.startupFee,
+      totalFees:p.totalFees,
+      totalDebit:p.totalDebit,
+      feeType:p.feeType,
+
+      rateUsed:p.rate,
+      senderCurrency:p.senderCur.code,
+      receiverCurrency:p.receiverCur.code,
+      senderSymbol:p.senderCur.symbol,
+      receiverSymbol:p.receiverCur.symbol,
+
+      reason:p.reason,
+      scheduledFor:p.scheduleDate,
+      nextRunAt:new Date(p.scheduleDate).getTime(),
+
+      repeatType:p.repeatType || "once",
+
+      active:true,
+      executed:false,
+      createdAt:Date.now(),
+      updatedAt:Date.now()
+    };
+
+    if(editingScheduledTransferId){
+      await update(ref(db,"scheduledTransfers/" + editingScheduledTransferId), data);
+      editingScheduledTransferId = null;
+    }else{
+      await push(ref(db,"scheduledTransfers"), data);
+    }
+
+    showTransferReceipt({
+      receiverName:p.receiverData.name || "Destinataire",
+      receiverPhoto:p.receiverData.photo || "",
+      receiverPhone:p.receiverPhone,
+      amountOriginal:formatMoney(p.amount,p.senderCur),
+      amountConverted:formatMoney(p.convertedAmount,p.receiverCur),
+      serviceFee:formatMoney(p.serviceFee,p.senderCur),
+      startupFee:formatMoney(p.startupFee,p.senderCur),
+      totalFees:formatMoney(p.totalFees,p.senderCur),
+      rateUsed:p.rate,
+      newBalance:"Sera débité à la date programmée",
+      customID:p.customID
+    }, "success");
+
+    document.getElementById("scheduledMessage").innerText =
+      wasEditing
+        ? "✅ Transfert programmé modifié"
+        : "✅ Transfert programmé avec succès";
+
+    resetScheduledForm();
+    loadScheduledTransfersList();
+
+  }catch(e){
+    alert("❌ Erreur : " + e.message);
+  }finally{
+    scheduledConfirmRunning = false;
+  }
 };
 
 /* ===============================
