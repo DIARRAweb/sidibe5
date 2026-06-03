@@ -12543,11 +12543,30 @@ window.selectVault = async function(id){
   }, 320);
 
   document.getElementById("activeVaultTitle").innerText = "🔐 " + vault.name;
-  document.getElementById("vaultMsg").innerText = "";
+
+  const msg = document.getElementById("vaultMsg");
+  const lockZone = document.getElementById("lockVaultZone");
+
+  const locked = vault.lockedUntil && Date.now() < Number(vault.lockedUntil);
+  const approved = vault.unlockRequest && vault.unlockRequest.status === "approved";
+
+  if(locked && !approved){
+    if(lockZone) lockZone.style.display = "none";
+
+    msg.innerText =
+      "🔒 Coffre bloqué jusqu’au " +
+      new Date(Number(vault.lockedUntil)).toLocaleString();
+  }else{
+    if(lockZone) lockZone.style.display = "block";
+    msg.innerText = "";
+  }
 };
 
 window.depositToSelectedVault = async function(){
-  if(!selectedVaultId) return;
+  if(!selectedVaultId){
+    alert("❌ Choisis d’abord un coffre");
+    return;
+  }
 
   const amount = Number(document.getElementById("vaultActionAmount").value);
   const msg = document.getElementById("vaultMsg");
@@ -12559,12 +12578,24 @@ window.depositToSelectedVault = async function(){
 
   const userRef = ref(db, "users/" + currentUser.phone);
   const snap = await get(userRef);
-  if(!snap.exists()) return;
+
+  if(!snap.exists()){
+    msg.innerText = "❌ Utilisateur introuvable";
+    return;
+  }
 
   const user = snap.val();
+
+  if(!user.vaults || !user.vaults[selectedVaultId]){
+    msg.innerText = "❌ Coffre introuvable";
+    return;
+  }
+
   const vault = user.vaults[selectedVaultId];
 
-  const disponible = Number(user.solde || 0) - Number(user.frozenBalance || 0);
+  const disponible =
+    Number(user.solde || 0) -
+    Number(user.frozenBalance || 0);
 
   if(disponible < amount){
     msg.innerText = "❌ Solde insuffisant";
@@ -12654,6 +12685,21 @@ window.lockSelectedVault = async function(){
   const dateValue = document.getElementById("vaultLockDate").value;
   const msg = document.getElementById("vaultMsg");
 
+  const vaultRef = ref(db, "users/" + currentUser.phone + "/vaults/" + selectedVaultId);
+  const snap = await get(vaultRef);
+
+  if(!snap.exists()){
+    msg.innerText = "❌ Coffre introuvable";
+    return;
+  }
+
+  const vault = snap.val();
+
+  if(vault.lockedUntil && Date.now() < Number(vault.lockedUntil)){
+    msg.innerText = "❌ Ce coffre est déjà bloqué. Tu ne peux plus modifier la date.";
+    return;
+  }
+
   if(!dateValue){
     msg.innerText = "❌ Choisis une date";
     return;
@@ -12666,10 +12712,12 @@ window.lockSelectedVault = async function(){
     return;
   }
 
-  await update(ref(db, "users/" + currentUser.phone + "/vaults/" + selectedVaultId), {
+  await update(vaultRef, {
     lockedUntil: lockTime,
     unlockRequest: null
   });
+
+  document.getElementById("vaultLockDate").value = "";
 
   msg.innerText = "🔒 Coffre bloqué jusqu’à la date choisie";
 
