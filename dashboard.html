@@ -7305,6 +7305,1026 @@ button {
 .vault-delete-no{
   background:linear-gradient(135deg,#2563eb,#1d4ed8) !important;
 }
+
+/* =====================================================
+   MALI WARI — HEADER ANIMÉ PREMIUM DASHBOARD
+   À COLLER TOUT EN BAS DU CSS
+===================================================== */
+
+.header {
+  overflow: hidden !important;
+}
+
+.logo-box {
+  flex: 1 !important;
+  min-width: 0 !important;
+  max-width: calc(100% - 110px) !important;
+  overflow: hidden !important;
+}
+
+.animated-logo {
+  position: relative !important;
+  animation: maliLogoFloat 2.4s ease-in-out infinite,
+             maliLogoGlow 1.8s ease-in-out infinite alternate !important;
+}
+
+@keyframes maliLogoFloat {
+  0% {
+    transform: translateY(0) rotate(0deg) scale(1);
+  }
+  50% {
+    transform: translateY(-4px) rotate(6deg) scale(1.06);
+  }
+  100% {
+    transform: translateY(0) rotate(0deg) scale(1);
+  }
+}
+
+@keyframes maliLogoGlow {
+  from {
+    box-shadow:
+      0 10px 24px rgba(255,122,0,0.28),
+      0 0 0 rgba(255,154,0,0);
+  }
+  to {
+    box-shadow:
+      0 14px 32px rgba(255,122,0,0.42),
+      0 0 24px rgba(255,154,0,0.55);
+  }
+}
+
+.logo-runner {
+  position: relative !important;
+  flex: 1 !important;
+  min-width: 0 !important;
+  height: 38px !important;
+  overflow: hidden !important;
+  display: flex !important;
+  align-items: center !important;
+}
+
+.moving-app-name {
+  position: absolute !important;
+  left: 0;
+  padding: 7px 15px !important;
+  border-radius: 999px !important;
+  font-size: 22px !important;
+  font-weight: 950 !important;
+  letter-spacing: 1px !important;
+  color: #10234a !important;
+  background:
+    linear-gradient(145deg, rgba(255,255,255,0.88), rgba(255,230,190,0.82)) !important;
+  border: 1px solid rgba(255,154,0,0.28) !important;
+  box-shadow:
+    0 8px 20px rgba(255,122,0,0.20),
+    inset 0 1px 0 rgba(255,255,255,0.95) !important;
+  animation: malipayMove 4.5s ease-in-out infinite alternate !important;
+  white-space: nowrap !important;
+}
+
+@keyframes malipayMove {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(calc(100% - 120px));
+  }
+}
+
+/* Effet premium intérieur dashboard */
+.balance-card,
+.action-box,
+.history-box {
+  animation: softCardIn 0.45s ease both;
+}
+
+@keyframes softCardIn {
+  from {
+    opacity: 0;
+    transform: translateY(16px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Action boutons plus vivants */
+.action-box {
+  transition: 0.28s ease !important;
+}
+
+.action-box:hover .action-icon {
+  animation: iconBounce 0.55s ease !important;
+}
+
+@keyframes iconBounce {
+  0% { transform: translateY(0) scale(1); }
+  45% { transform: translateY(-6px) scale(1.12); }
+  100% { transform: translateY(0) scale(1); }
+}
+
+/* Mobile */
+@media(max-width:520px) {
+  .logo-box {
+    max-width: calc(100% - 96px) !important;
+    gap: 8px !important;
+  }
+
+  .logo-runner {
+    height: 34px !important;
+  }
+
+  .moving-app-name {
+    font-size: 18px !important;
+    padding: 6px 12px !important;
+  }
+
+  @keyframes malipayMove {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(calc(100% - 96px));
+    }
+  }
+}
+
+@media(max-width:360px) {
+  .moving-app-name {
+    font-size: 15px !important;
+    padding: 6px 10px !important;
+  }
+
+  @keyframes malipayMove {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(calc(100% - 82px));
+    }
+  }
+}
+
+/* =====================================================
+   MALI WARI — BOUTONS + ACTIVITÉS RÉCENTES ULTRA PREMIUM
+   À COLLER TOUT EN BAS DU CSS
+===================================================== */
+
+.action-box {
+  position: relative !important;
+  min-height: 128px !important;
+  border-radius: 30px !important;
+  background:
+    radial-gradient(circle at top right, rgba(255,154,0,0.22), transparent 36%),
+    linear-gradient(145deg, rgba(255,255,255,0.96), rgba(226,238,255,0.88)) !important;
+  border: 1px solid rgba(255,255,255,0.92) !important;
+  box-shadow:
+    0 18px 42px rgba(8,24,60,0.22),
+    inset 0 1px 0 rgba(255,255,255,1) !important;
+}
+
+.action-icon {
+  width: 56px !important;
+  height: 56px !important;
+  border-radius: 22px !important;
+  font-size: 28px !important;
+  background:
+    linear-gradient(145deg, #ffffff, #dbe8ff) !important;
+  box-shadow:
+    0 12px 26px rgba(20,45,90,0.18),
+    inset 0 1px 0 white !important;
+}
+
+.action-box span {
+  color: #0f2554 !important;
+  font-size: 15px !important;
+  font-weight: 1000 !important;
+  letter-spacing: .2px !important;
+}
+
+.action-box small {
+  color: #61708f !important;
+  font-size: 11px !important;
+  font-weight: 850 !important;
+}
+
+.action-box:hover {
+  transform: translateY(-6px) scale(1.025) !important;
+  box-shadow:
+    0 26px 58px rgba(8,24,60,0.30),
+    0 0 24px rgba(255,154,0,0.22),
+    inset 0 1px 0 white !important;
+}
+
+.history-box {
+  border-radius: 32px !important;
+  background:
+    radial-gradient(circle at top right, rgba(255,154,0,0.18), transparent 35%),
+    linear-gradient(145deg, rgba(255,255,255,0.94), rgba(223,235,255,0.86)) !important;
+}
+
+.history-box h3 {
+  padding: 12px 14px !important;
+  border-radius: 20px !important;
+  background: linear-gradient(135deg, #ff9a00, #ff6a00, #ff3d00) !important;
+  color: white !important;
+  box-shadow: 0 12px 28px rgba(255,106,0,0.26) !important;
+}
+
+.history-item {
+  border-radius: 24px !important;
+  background:
+    linear-gradient(145deg, #ffffff, #fff4e8) !important;
+  border: 1px solid rgba(255,154,0,0.18) !important;
+  box-shadow:
+    0 14px 32px rgba(20,35,70,0.16),
+    inset 0 1px 0 white !important;
+}
+
+.history-title {
+  color: #10234a !important;
+  font-size: 16px !important;
+  font-weight: 1000 !important;
+}
+
+.history-phone {
+  color: #445575 !important;
+  font-weight: 850 !important;
+}
+
+.history-date {
+  color: #7a8498 !important;
+  font-weight: 800 !important;
+}
+
+.history-reason {
+  background: #fff3e4 !important;
+  border: 1px solid rgba(255,154,0,0.18) !important;
+  color: #322313 !important;
+}
+
+.history-amount.amount-in {
+  color: #009b63 !important;
+  background: #e8fff2 !important;
+}
+
+.history-amount.amount-out {
+  color: #d90429 !important;
+  background: #ffe9ee !important;
+}
+
+/* Champs dans les fenêtres */
+.form-card input,
+.form-card textarea,
+.form-card select {
+  border-radius: 18px !important;
+  background: #ffffff !important;
+  color: #111 !important;
+  border: 2px solid rgba(255,154,0,0.22) !important;
+}
+
+.form-card label {
+  color: #1d2b45 !important;
+  font-weight: 950 !important;
+}
+
+@media(max-width:520px){
+  .action-box {
+    min-height: 118px !important;
+    border-radius: 26px !important;
+  }
+
+  .action-icon {
+    width: 50px !important;
+    height: 50px !important;
+    font-size: 25px !important;
+  }
+
+  .action-box span {
+    font-size: 14px !important;
+  }
+
+  .history-box h3 {
+    font-size: 18px !important;
+  }
+}
+
+/* =====================================================
+   PREMIUM TRANSFERT INSTANTANÉ + PROGRAMMÉ
+===================================================== */
+
+/* Carte principale */
+#transferBox .form-card,
+#scheduledTransferBox .form-card{
+  background:
+    radial-gradient(circle at top right,
+    rgba(255,154,0,.16),
+    transparent 35%),
+    linear-gradient(145deg,#ffffff,#fff5ea) !important;
+
+  border-radius:32px !important;
+
+  box-shadow:
+    0 24px 60px rgba(0,0,0,.18),
+    inset 0 1px 0 rgba(255,255,255,.95) !important;
+}
+
+/* Titre */
+#transferBox .form-title,
+#scheduledTransferBox .form-title{
+
+  font-size:22px !important;
+
+  background:
+    linear-gradient(
+      135deg,
+      #ff9a00,
+      #ff6a00,
+      #ff3d00
+    ) !important;
+
+  border-radius:22px !important;
+
+  box-shadow:
+    0 14px 34px rgba(255,106,0,.30);
+}
+
+/* Labels */
+#transferBox label,
+#scheduledTransferBox label{
+
+  color:#132b58 !important;
+
+  font-size:13px !important;
+
+  font-weight:950 !important;
+
+  letter-spacing:.3px;
+}
+
+/* Champs */
+#transferBox input,
+#transferBox textarea,
+#transferBox select,
+
+#scheduledTransferBox input,
+#scheduledTransferBox textarea,
+#scheduledTransferBox select{
+
+  background:white !important;
+
+  border:2px solid rgba(255,154,0,.22) !important;
+
+  border-radius:18px !important;
+
+  min-height:52px !important;
+
+  font-size:14px !important;
+
+  font-weight:800 !important;
+
+  color:#111 !important;
+
+  box-shadow:
+    0 8px 22px rgba(0,0,0,.08);
+}
+
+/* Focus */
+#transferBox input:focus,
+#transferBox textarea:focus,
+#transferBox select:focus,
+
+#scheduledTransferBox input:focus,
+#scheduledTransferBox textarea:focus,
+#scheduledTransferBox select:focus{
+
+  border-color:#ff7a00 !important;
+
+  box-shadow:
+    0 0 0 4px rgba(255,154,0,.15),
+    0 12px 26px rgba(0,0,0,.12) !important;
+}
+
+/* Contact sélectionné */
+#selectedContact,
+#scheduledSelectedContact{
+
+  background:
+    linear-gradient(
+      145deg,
+      #fff8ef,
+      #ffe9c9
+    ) !important;
+
+  border-radius:20px !important;
+
+  border:1px solid rgba(255,154,0,.22) !important;
+
+  padding:14px !important;
+
+  box-shadow:
+    0 10px 24px rgba(0,0,0,.08);
+}
+
+/* Conversion */
+#conversionBox,
+#scheduledConversionBox{
+
+  background:
+    linear-gradient(
+      145deg,
+      #e9fff3,
+      #d8ffec
+    ) !important;
+
+  color:#009b63 !important;
+
+  border:1px solid rgba(0,155,99,.20) !important;
+
+  border-radius:18px !important;
+
+  font-size:14px !important;
+
+  font-weight:950 !important;
+
+  box-shadow:
+    0 10px 24px rgba(0,155,99,.10);
+}
+
+/* Résumé */
+.transfer-summary,
+.schedule-summary{
+
+  margin-top:14px !important;
+
+  padding:16px !important;
+
+  border-radius:22px !important;
+
+  background:
+    linear-gradient(
+      145deg,
+      #eef5ff,
+      #dfe9ff
+    ) !important;
+
+  color:#10234a !important;
+
+  border:1px solid rgba(90,120,180,.18);
+
+  box-shadow:
+    0 12px 28px rgba(30,50,90,.10);
+}
+
+/* Liste contacts */
+.contacts-box{
+
+  background:white !important;
+
+  border-radius:22px !important;
+
+  box-shadow:
+    0 18px 40px rgba(0,0,0,.12);
+}
+
+/* Contact */
+.contact-item{
+
+  background:
+    linear-gradient(
+      145deg,
+      #ffffff,
+      #fff3e5
+    ) !important;
+
+  border-radius:18px !important;
+
+  transition:.25s;
+}
+
+.contact-item:hover{
+
+  transform:translateX(4px);
+
+  background:
+    linear-gradient(
+      145deg,
+      #fffaf3,
+      #ffe6c2
+    ) !important;
+}
+
+/* Bouton envoyer */
+#sendBtn,
+#scheduledSendBtn{
+
+  min-height:56px !important;
+
+  border-radius:20px !important;
+
+  font-size:15px !important;
+
+  font-weight:950 !important;
+
+  letter-spacing:.3px;
+
+  background:
+    linear-gradient(
+      135deg,
+      #ff9a00,
+      #ff6a00,
+      #ff3d00
+    ) !important;
+
+  box-shadow:
+    0 18px 40px rgba(255,106,0,.34);
+}
+
+#sendBtn:hover,
+#scheduledSendBtn:hover{
+
+  transform:translateY(-3px);
+
+  box-shadow:
+    0 24px 50px rgba(255,106,0,.45);
+}
+
+/* Message résultat */
+#message,
+#scheduledMessage{
+
+  margin-top:12px;
+
+  text-align:center;
+
+  font-weight:950;
+
+  color:#10234a;
+}
+
+/* =====================================================
+   PREMIUM — MON QR + ACHAT CRÉDIT + MESSAGE + COFFRE
+===================================================== */
+
+/* Boutons dashboard ciblés */
+.action-message,
+.action-qr,
+.action-airtime,
+.action-vault{
+  background:
+    radial-gradient(circle at top right, rgba(255,154,0,.22), transparent 34%),
+    linear-gradient(145deg,#ffffff,#eaf1ff) !important;
+  border:1px solid rgba(255,255,255,.90) !important;
+  box-shadow:
+    0 18px 42px rgba(10,25,65,.20),
+    inset 0 1px 0 rgba(255,255,255,1) !important;
+}
+
+.action-message .action-icon{
+  background:linear-gradient(145deg,#fff7bf,#ffe36b) !important;
+}
+
+.action-qr .action-icon{
+  background:linear-gradient(145deg,#dbeafe,#93c5fd) !important;
+}
+
+.action-airtime .action-icon{
+  background:linear-gradient(145deg,#dcfce7,#86efac) !important;
+}
+
+.action-vault .action-icon{
+  background:linear-gradient(145deg,#ede9fe,#c4b5fd) !important;
+}
+
+.action-message:hover,
+.action-qr:hover,
+.action-airtime:hover,
+.action-vault:hover{
+  transform:translateY(-6px) scale(1.02) !important;
+  box-shadow:
+    0 26px 55px rgba(10,25,65,.28),
+    0 0 28px rgba(255,154,0,.20) !important;
+}
+
+/* ================= MESSAGE ================= */
+#notifBox .notif-wrapper{
+  background:
+    linear-gradient(145deg,#111827,#1f2937) !important;
+  border-radius:26px !important;
+  padding:14px !important;
+}
+
+.notif-card{
+  background:
+    linear-gradient(145deg,#ffffff,#fff4e8) !important;
+  border-radius:22px !important;
+  padding:15px !important;
+}
+
+.notif-title{
+  font-size:15px !important;
+  color:#10234a !important;
+}
+
+.notif-line{
+  color:#334155 !important;
+}
+
+.notif-amount{
+  background:#e8fff2 !important;
+  color:#009b63 !important;
+}
+
+/* ================= MON QR ================= */
+.qr-card{
+  background:
+    radial-gradient(circle at top right, rgba(255,154,0,.25), transparent 35%),
+    linear-gradient(145deg,#0f172a,#1e293b) !important;
+  border-radius:28px !important;
+}
+
+.qr-bank-card{
+  border-radius:24px !important;
+  background:
+    linear-gradient(135deg,#ff9a00,#ff6a00,#ff3d00) !important;
+}
+
+#qrCanvas{
+  border-radius:22px !important;
+  box-shadow:
+    0 18px 38px rgba(0,0,0,.35) !important;
+}
+
+/* ================= ACHAT CRÉDIT ================= */
+#airtimeBox .form-card{
+  background:
+    radial-gradient(circle at top right, rgba(34,197,94,.18), transparent 35%),
+    linear-gradient(145deg,#ffffff,#ecfff4) !important;
+}
+
+#airtimeBox .form-title{
+  background:
+    linear-gradient(135deg,#22c55e,#16a34a,#0f766e) !important;
+}
+
+#airtimeSummary{
+  background:#e8fff2 !important;
+  color:#047857 !important;
+  border:1px solid rgba(4,120,87,.22) !important;
+}
+
+/* ================= COFFRE-FORT ================= */
+#vaultBox .vault-hero{
+  background:
+    radial-gradient(circle at top right, rgba(124,58,237,.18), transparent 35%),
+    linear-gradient(145deg,#ffffff,#f3efff) !important;
+}
+
+.vault-badge{
+  background:#f3e8ff !important;
+  color:#7c3aed !important;
+}
+
+.vault-item{
+  background:
+    linear-gradient(145deg,#ffffff,#f5f1ff) !important;
+  border:1px solid rgba(124,58,237,.14) !important;
+}
+
+.vault-item strong{
+  color:#7c3aed !important;
+}
+
+.vault-action-card{
+  background:
+    linear-gradient(145deg,#ffffff,#fff7ed) !important;
+  border:1px solid rgba(255,154,0,.20) !important;
+}
+
+/* Mobile */
+@media(max-width:520px){
+  .action-message,
+  .action-qr,
+  .action-airtime,
+  .action-vault{
+    min-height:112px !important;
+  }
+
+  .qr-card,
+  #notifBox .notif-wrapper,
+  #vaultBox .vault-hero{
+    border-radius:24px !important;
+  }
+}
+
+/* =====================================================
+   MALI WARI PREMIUM — ACTIVITÉS RÉCENTES
+===================================================== */
+
+.history-box{
+
+  position:relative !important;
+
+  overflow:hidden !important;
+
+  border-radius:34px !important;
+
+  background:
+    radial-gradient(
+      circle at top right,
+      rgba(255,154,0,.18),
+      transparent 35%
+    ),
+    linear-gradient(
+      145deg,
+      rgba(255,255,255,.96),
+      rgba(226,238,255,.88)
+    ) !important;
+
+  border:1px solid rgba(255,255,255,.9) !important;
+
+  box-shadow:
+    0 22px 55px rgba(10,25,65,.20),
+    inset 0 1px 0 rgba(255,255,255,1) !important;
+}
+
+/* Titre principal */
+
+.history-box h3{
+
+  display:flex !important;
+
+  align-items:center !important;
+
+  justify-content:center !important;
+
+  gap:10px !important;
+
+  margin-bottom:16px !important;
+
+  padding:14px 16px !important;
+
+  border-radius:22px !important;
+
+  background:
+    linear-gradient(
+      135deg,
+      #ff9a00,
+      #ff6a00,
+      #ff3d00
+    ) !important;
+
+  color:white !important;
+
+  font-size:20px !important;
+
+  font-weight:950 !important;
+
+  box-shadow:
+    0 14px 32px rgba(255,106,0,.30);
+}
+
+/* Une activité */
+
+.history-item{
+
+  position:relative !important;
+
+  overflow:hidden !important;
+
+  margin-bottom:14px !important;
+
+  padding:16px !important;
+
+  border-radius:24px !important;
+
+  background:
+    linear-gradient(
+      145deg,
+      #ffffff,
+      #fff4e8
+    ) !important;
+
+  border:1px solid rgba(255,154,0,.18) !important;
+
+  box-shadow:
+    0 14px 34px rgba(10,25,65,.14),
+    inset 0 1px 0 rgba(255,255,255,.95) !important;
+
+  animation:historyCardIn .35s ease;
+}
+
+/* Barre latérale */
+
+.history-item::before{
+
+  content:"";
+
+  position:absolute;
+
+  left:0;
+
+  top:14%;
+
+  width:5px;
+
+  height:72%;
+
+  border-radius:999px;
+
+  background:
+    linear-gradient(
+      180deg,
+      #ff9a00,
+      #ff3d00
+    );
+}
+
+@keyframes historyCardIn{
+
+  from{
+    opacity:0;
+    transform:translateY(10px);
+  }
+
+  to{
+    opacity:1;
+    transform:translateY(0);
+  }
+}
+
+/* Nom */
+
+.history-title{
+
+  color:#10234a !important;
+
+  font-size:16px !important;
+
+  font-weight:1000 !important;
+
+  margin-bottom:6px !important;
+}
+
+/* Téléphone */
+
+.history-phone{
+
+  color:#56657f !important;
+
+  font-size:13px !important;
+
+  font-weight:850 !important;
+}
+
+/* Date */
+
+.history-date{
+
+  display:inline-block;
+
+  margin-top:8px !important;
+
+  padding:6px 10px !important;
+
+  border-radius:999px !important;
+
+  background:#eef5ff !important;
+
+  color:#456 !important;
+
+  font-size:11px !important;
+
+  font-weight:850 !important;
+}
+
+/* Motif */
+
+.history-reason{
+
+  margin-top:10px !important;
+
+  padding:12px !important;
+
+  border-radius:16px !important;
+
+  background:#fff8f0 !important;
+
+  border:1px solid rgba(255,154,0,.15);
+
+  color:#322313 !important;
+
+  font-size:12px !important;
+
+  font-weight:750 !important;
+
+  line-height:1.5 !important;
+}
+
+/* Montants entrants */
+
+.history-amount.amount-in{
+
+  background:
+    linear-gradient(
+      145deg,
+      #e8fff2,
+      #d9ffeb
+    ) !important;
+
+  color:#009b63 !important;
+
+  border:1px solid rgba(0,155,99,.25) !important;
+
+  padding:8px 12px !important;
+
+  border-radius:999px !important;
+
+  font-size:14px !important;
+
+  font-weight:950 !important;
+
+  box-shadow:
+    0 8px 20px rgba(0,155,99,.12);
+}
+
+/* Montants sortants */
+
+.history-amount.amount-out{
+
+  background:
+    linear-gradient(
+      145deg,
+      #ffe9ee,
+      #ffdce4
+    ) !important;
+
+  color:#d90429 !important;
+
+  border:1px solid rgba(217,4,41,.22) !important;
+
+  padding:8px 12px !important;
+
+  border-radius:999px !important;
+
+  font-size:14px !important;
+
+  font-weight:950 !important;
+
+  box-shadow:
+    0 8px 20px rgba(217,4,41,.12);
+}
+
+/* Vide */
+
+.empty-history{
+
+  padding:22px !important;
+
+  border-radius:22px !important;
+
+  text-align:center !important;
+
+  background:
+    linear-gradient(
+      145deg,
+      #ffffff,
+      #edf4ff
+    ) !important;
+
+  color:#60708f !important;
+
+  font-size:14px !important;
+
+  font-weight:850 !important;
+}
+
+/* Mobile */
+
+@media(max-width:520px){
+
+  .history-box{
+    border-radius:28px !important;
+  }
+
+  .history-box h3{
+    font-size:18px !important;
+  }
+
+  .history-item{
+    padding:14px !important;
+  }
+
+  .history-title{
+    font-size:14px !important;
+  }
+
+  .history-amount.amount-in,
+  .history-amount.amount-out{
+    font-size:13px !important;
+  }
+}
 </style>
 </head>
 
@@ -7322,9 +8342,12 @@ button {
 <header class="header">
 
   <div class="logo-box">
-    <div class="logo-icon">💰</div>
-    <div class="logo-title">MALI WARI</div>
+  <div class="logo-icon animated-logo">💰</div>
+
+  <div class="logo-runner">
+    <div class="logo-title moving-app-name">MALI WARI</div>
   </div>
+</div>
 
   <div class="header-right">
 
@@ -7541,7 +8564,11 @@ button {
           </p>
 
           <button id="clearNotifBtn" class="send-btn" onclick="clearAllNotifications()">
-        🧹 Vider la messagerie
+            🧹 Vider la messagerie
+          </button>
+
+      <button class="send-btn" onclick="changeNotificationSound()">
+        🔊 Changer le son de notification
       </button>
 
       <div id="notifList" class="notif-list"></div>
@@ -9513,6 +10540,26 @@ function applyLanguage(){
   loadNotifications();
 }
 applyLanguage();
+
+const notifSound = document.getElementById("notifSound");
+if(notifSound){
+  notifSound.src = getNotificationSound();
+  notifSound.load();
+}
+
+document.addEventListener("click", ()=>{
+  const sound = document.getElementById("notifSound");
+  if(sound){
+    sound.src = getNotificationSound();
+    sound.play()
+      .then(()=>{
+        sound.pause();
+        sound.currentTime = 0;
+      })
+      .catch(()=>{});
+  }
+}, {once:true});
+
 let allUsers = [];
 let currenciesData = {};
 
@@ -10033,22 +11080,31 @@ document.getElementById("toggleBalance").onclick = async function(){
 /* ===== CONVERSION LIVE VISUELLE ===== */
 
 async function updateConversion(){
-const receiverPhone=normalizeReceiverPhoneSmart(receiverInput.value.trim());
-const amount=parseFloat(amountInput.value);
-if(!receiverPhone || !amount){ conversionBox.style.display="none"; return; }
+  const receiverPhone = normalizeReceiverPhoneSmart(receiverInput.value.trim());
+  const amount = parseFloat(amountInput.value);
 
-const senderCur=getCurrency(currentUser.phone);
-const receiverCur=getCurrency(receiverPhone);
+  if(!receiverPhone || !amount){
+    conversionBox.style.display = "none";
+    return;
+  }
 
-const rate=await getLiveRate(senderCur.code,receiverCur.code);
-if(!rate){ conversionBox.style.display="none"; return; }
+  const senderCur = getCurrency(currentUser.phone);
+  const receiverCur = getCurrency(receiverPhone);
+  const rate = await getLiveRate(senderCur.code, receiverCur.code);
 
-const converted=amount*rate;
+  if(!rate){
+    conversionBox.style.display = "none";
+    return;
+  }
 
-conversionBox.style.display="block";
-conversionBox.innerHTML=
-`💱 1 ${senderCur.symbol} = ${rate.toFixed(4)} ${receiverCur.symbol}<br>
-💰 Destinataire recevra : <strong>${formatMoney(converted)} ${receiverCur.symbol}</strong>`;
+  const converted = amount * rate;
+
+  conversionBox.style.display = "block";
+  conversionBox.innerHTML = `
+    💱 1 ${senderCur.symbol} = ${rate.toFixed(4)} ${receiverCur.symbol}<br>
+    💰 Destinataire recevra :
+    <strong>${formatMoney(converted, receiverCur)}</strong>
+  `;
 }
 
 /* =========================
@@ -11460,13 +12516,108 @@ function renderNotifications(snapshot){
   }
 }
 
+let lastNotifCount = 0;
+let notificationsStarted = false;
+
 function listenNotifications(){
   const notifRef = ref(db,"notifications/" + currentUser.phone);
 
   onValue(notifRef,(snapshot)=>{
+    let newCount = 0;
+
+    if(snapshot.exists()){
+      Object.values(snapshot.val()).forEach(n=>{
+        if(!n.seen) newCount++;
+      });
+    }
+
     renderNotifications(snapshot);
+
+    if(notificationsStarted && newCount > lastNotifCount){
+      playNotificationSound();
+    }
+
+    lastNotifCount = newCount;
+    notificationsStarted = true;
   });
 }
+
+function getNotificationSound(){
+  return localStorage.getItem("customNotifSound") ||
+         "https://actions.google.com/sounds/v1/alarms/beep_short.ogg";
+}
+
+document.addEventListener("click", ()=>{
+  const sound = document.getElementById("notifSound");
+  if(sound){
+    sound.src = getNotificationSound();
+    sound.play()
+      .then(()=>{
+        sound.pause();
+        sound.currentTime = 0;
+      })
+      .catch(()=>{});
+  }
+}, {once:true});
+
+let notifSoundStopTimer = null;
+
+function playNotificationSound(){
+  const sound = document.getElementById("notifSound");
+  if(!sound) return;
+
+  clearTimeout(notifSoundStopTimer);
+
+  sound.pause();
+  sound.currentTime = 0;
+  sound.src = getNotificationSound();
+  sound.volume = 1;
+
+  sound.play().catch(()=>{
+    console.log("Son bloqué jusqu'à une interaction utilisateur.");
+  });
+
+  notifSoundStopTimer = setTimeout(()=>{
+    sound.pause();
+    sound.currentTime = 0;
+  }, 4000);
+}
+
+window.changeNotificationSound = function(){
+  const input = document.createElement("input");
+  input.type = "file";
+  input.accept = "audio/*";
+
+  input.onchange = function(e){
+    const file = e.target.files[0];
+    if(!file) return;
+
+    const reader = new FileReader();
+
+    reader.onload = function(){
+      localStorage.setItem("customNotifSound", reader.result);
+
+      const sound = document.getElementById("notifSound");
+      if(sound){
+        sound.src = reader.result;
+        sound.load();
+
+        sound.play().then(()=>{
+          setTimeout(()=>{
+            sound.pause();
+            sound.currentTime = 0;
+          }, 4000);
+        }).catch(()=>{});
+      }
+
+      alert("✅ Son de notification enregistré sur cet appareil");
+    };
+
+    reader.readAsDataURL(file);
+  };
+
+  input.click();
+};
 
 listenNotifications();
 listenWithdrawRequests();
