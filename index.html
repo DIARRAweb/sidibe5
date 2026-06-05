@@ -851,7 +851,8 @@ footer{
 
   .cards-slider{
     max-width:100%;
-    min-height:730px;
+    min-height:auto !important;
+    height:auto !important;
   }
 
   .welcome-panel,
@@ -886,8 +887,9 @@ footer{
 
 @media(max-width:360px){
   .cards-slider{
-    min-height:720px;
-  }
+    min-height:auto !important;
+    height:auto !important;
+}
 
   .welcome-panel h1{
     font-size:28px !important;
@@ -1066,42 +1068,38 @@ main{
   transform:translateY(-2px) scale(1.01);
 }
 
-/* ✅ REDUCTION ESPACE CARTE / FOOTER */
+/* ✅ ESPACE PROPRE ENTRE CARTE ET FOOTER */
 main{
-  padding-bottom: 4px !important;
+  padding-bottom: 10px !important;
 }
 
 .cards-slider{
   margin-bottom: 0 !important;
   padding-bottom: 0 !important;
+  min-height: auto !important;
+  height: auto !important;
 }
 
 .welcome-panel,
 .login-card{
-  margin-bottom: 6px !important;
+  margin-bottom: 16px !important;
 }
 
 footer{
-  margin-top: 4px !important;
+  margin-top: 0 !important;
   margin-bottom: 0 !important;
-  padding: 10px 8px !important;
+  padding: 11px 8px !important;
 }
 
 /* Mobile */
 @media(max-width:520px){
   main{
-    padding-bottom: 4px !important;
-  }
-
-  .cards-slider{
-    margin-bottom: 0 !important;
-    padding-bottom: 0 !important;
-    min-height: auto !important;
+    padding-bottom: 10px !important;
   }
 
   .welcome-panel,
   .login-card{
-    margin-bottom: 12px !important;
+    margin-bottom: 16px !important;
   }
 
   footer{
