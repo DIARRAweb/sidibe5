@@ -14156,19 +14156,69 @@ window.purchaseAirtime = async function() {
     }
 
     const userPhone = currentUser.phone;
+    const userRef = ref(db, "users/" + userPhone);
+    const userSnap = await get(userRef);
 
-    await push(ref(db, "airtimeRequests"), {
+    if(!userSnap.exists()){
+      alert("❌ Utilisateur introuvable.");
+      return;
+    }
+
+    const user = userSnap.val();
+    const disponible = Number(user.solde || 0) - Number(user.frozenBalance || 0);
+
+    if(disponible < amount){
+      alert("❌ Solde Mali Wari insuffisant.");
+      return;
+    }
+
+    const newSolde = Number(user.solde || 0) - amount;
+    const customID = generateTxID();
+
+    await update(userRef, {
+      solde: newSolde
+    });
+
+    const requestRef = await push(ref(db, "airtimeRequests"), {
       userPhone,
       operator,
       recipientPhone: phone,
       amount,
       reason,
       status: "pending_backend",
-      provider: "paydunya",
+      provider: "reloadly",
+      customID,
       createdAt: Date.now()
     });
 
-    alert("✅ Demande d’achat crédit envoyée. Traitement en cours.");
+    await push(ref(db, "history/" + userPhone), {
+      customID,
+      type: "airtime",
+      from: userPhone,
+      to: phone,
+      operator,
+      amountOriginal: amount,
+      reason: reason || "Achat de crédit",
+      date: new Date().toLocaleString(),
+      createdAt: Date.now(),
+      requestId: requestRef.key
+    });
+
+    await push(ref(db, "notifications/" + userPhone), {
+      title: "📱 Achat de crédit",
+      phone: phone,
+      amount: amount,
+      reason: `${operator} - ${reason || "Recharge téléphonique"}`,
+      date: new Date().toLocaleString(),
+      seen: false,
+      claimable: false
+    });
+
+    currentUser.solde = newSolde;
+    localStorage.setItem("loggedUser", JSON.stringify(currentUser));
+    refreshBalanceDisplay();
+
+    alert("✅ Achat lancé. Ton solde Mali Wari a été débité.");
 
     airtimePhone.value = "";
     airtimeAmount.value = "";
