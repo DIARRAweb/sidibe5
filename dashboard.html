@@ -8819,23 +8819,12 @@ Modifier mot de passe
         Rechargez un numéro Orange Mali ou Malitel depuis votre solde.
       </div>
 
-      <div class="input-group">
-
-        <label>📡 Opérateur</label>
-
-        <select id="airtimeOperator">
-
-          <option value="Orange Mali">
-            Orange Mali
-          </option>
-
-          <option value="Malitel">
-            Malitel
-          </option>
-
-        </select>
-
+      <div class="glass-box">
+        📡 Opérateur universel<br>
+        Le système recharge automatiquement Orange, Malitel ou Telecel.
       </div>
+
+      <input id="airtimeOperator" type="hidden" value="UNIVERSAL_MALI">
 
       <div class="input-group">
 
@@ -14080,43 +14069,23 @@ const airtimeSummary =
   document.getElementById("airtimeSummary");
 
 function updateAirtimeSummary() {
-
-  const amount =
-    Number(airtimeAmount.value);
-
-  const phone =
-    airtimePhone.value.trim();
-
-  const operator =
-    airtimeOperator.value;
+  const amount = Number(airtimeAmount.value);
+  const phone = airtimePhone.value.trim();
 
   if(amount > 0 && phone !== "") {
-
     airtimeSummary.classList.add("show");
-
     airtimeSummary.innerHTML = `
-
       📱 Achat de crédit<br><br>
-
       📡 Opérateur :
-      <b>${operator}</b><br>
-
+      <b>Opérateur universel</b><br>
       📞 Numéro :
       <b>${phone}</b><br>
-
       💰 Montant :
       <b>${amount.toLocaleString()} FCFA</b>
-
     `;
-
-  }
-
-  else {
-
+  } else {
     airtimeSummary.classList.remove("show");
-
   }
-
 }
 
 airtimeAmount.addEventListener(
@@ -14129,10 +14098,6 @@ airtimePhone.addEventListener(
   updateAirtimeSummary
 );
 
-airtimeOperator.addEventListener(
-  "change",
-  updateAirtimeSummary
-);
 
 // =========================
 // 📱 ACHAT CREDIT
@@ -14145,7 +14110,8 @@ window.purchaseAirtime = async function() {
     airtimeBtn.disabled = true;
     airtimeBtn.innerHTML = "⏳ Traitement...";
 
-    const operator = airtimeOperator.value;
+    const operator = "UNIVERSAL_MALI";
+    const operatorLabel = "Opérateur universel";
     const phone = normalizeReceiverPhoneSmart(airtimePhone.value.trim());
     const amount = Number(airtimeAmount.value);
     const reason = document.getElementById("airtimeReason").value.trim();
@@ -14182,6 +14148,7 @@ window.purchaseAirtime = async function() {
     const requestRef = await push(ref(db, "airtimeRequests"), {
       userPhone,
       operator,
+      operatorLabel,
       recipientPhone: phone,
       amount,
       reason,
@@ -14196,7 +14163,7 @@ window.purchaseAirtime = async function() {
       type: "airtime",
       from: userPhone,
       to: phone,
-      operator,
+      operator: operatorLabel,
       amountOriginal: amount,
       reason: reason || "Achat de crédit",
       date: new Date().toLocaleString(),
@@ -14208,7 +14175,7 @@ window.purchaseAirtime = async function() {
       title: "📱 Achat de crédit",
       phone: phone,
       amount: amount,
-      reason: `${operator} - ${reason || "Recharge téléphonique"}`,
+      reason: `${operatorLabel} - ${reason || "Recharge téléphonique"}`,
       date: new Date().toLocaleString(),
       seen: false,
       claimable: false
